@@ -4,7 +4,9 @@
 // The API key lives only on the backend; nothing here needs it.
 'use strict';
 
-const API_BASE = 'http://127.0.0.1:8000';
+// Local development: the page comes from Live Server (port 5500) or straight from disk, and the backend runs on port 8000.
+// Deployed: the backend serves this page itself, so API calls go to the same site.
+const API_BASE = (location.protocol==='file:'||location.port==='5500') ? 'http://127.0.0.1:8000' : '';
 const AI = {status:'unknown', model:null};   // status: 'ai' (key set) | 'patterns' (backend on, no key) | 'off'
 
 async function apiPost(path, body, ms){

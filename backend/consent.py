@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 from email.message import EmailMessage
 from typing import Dict, List, Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
@@ -65,9 +65,11 @@ def _esc(s):
     return html.escape(str(s or ""))
 
 
-def _base_url():
+def _base_url(request: Request):
+    """Where the patient's link should point: PUBLIC_BASE_URL if set, otherwise the site that received the request."""
+    base = os.getenv("PUBLIC_BASE_URL") or str(request.base_url)
     # "localhost" rather than a bare IP address: email filters treat links to raw IPs as phishing
-    return os.getenv("PUBLIC_BASE_URL", "http://localhost:8000").rstrip("/")
+    return base.replace("//127.0.0.1", "//localhost").rstrip("/")
 
 
 def _mask(email):
@@ -159,12 +161,12 @@ def preview(c: ConsentRequest):
 
 
 @router.post("/consent/send")
-def send(c: ConsentRequest):
+def send(c: ConsentRequest, request: Request):
     # Step 3 of the spec: the sending physician must approve the form before it goes out.
     if not c.approved_by_physician:
         raise HTTPException(400, "The sending physician must review and approve the consent form first.")
     token = secrets.token_urlsafe(16)
-    link = f"{_base_url()}/consent/{token}"
+    link = f"{_base_url(request)}/consent/{token}"
     s, r = c.sender, c.recipient
     # The email carries no diagnosis or medical detail: just who, why, and a link to the secure form.
     subject = f"Please review: sharing your health information with {r.name}"

@@ -15,6 +15,7 @@ from typing import List, Literal, Optional  # noqa: E402
 
 from fastapi import FastAPI  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel, ConfigDict, Field  # noqa: E402
 
 import ai  # noqa: E402
@@ -270,3 +271,10 @@ def privacy_check(req: PrivacyRequest):
                     flags.append({"text": t, "reason": f.get("reason", "Flagged by the AI check."), "kind": "ai", "source": "ai"})
                     have.add(t.lower())
     return {"flags": flags, "mode": "ai" if used_ai else "patterns"}
+
+
+# Serve the app itself, so one deployed service hosts both the page and the API.
+# Mounted last: the API routes above take priority over these files.
+FRONTEND = Path(__file__).resolve().parent.parent / "frontend"
+if FRONTEND.is_dir():
+    app.mount("/", StaticFiles(directory=FRONTEND, html=True), name="frontend")
