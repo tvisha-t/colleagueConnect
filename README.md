@@ -7,8 +7,8 @@ DocSpot is a prototype built for the Impiricus challenge at HackGT 13. It helps 
 ## The flow
 
 1. **Find a specialist.** Choose a patient and get ranked physicians with reasons (relationship, treatment experience, accepting patients, distance). Rankings never use payments from drug companies.
-2. **Minimal fax.** An AI drafts the fax from a general concern only (e.g. "inflammatory arthritis"): no name, date of birth, medications, or labs. A privacy check blocks sending if anything else appears. The physician reviews and approves every fax.
-3. **The fax arrives.** A simulated practice fax inbox shows the referral getting past the front desk (marketing faxes are discarded). The fax has a scannable QR code instead of a link.
+2. **Minimal fax.** An AI drafts the fax from a general concern only (e.g. "inflammatory arthritis"): no name, date of birth, medications, or labs. A privacy check blocks sending if anything else appears. The physician must review and approve every fax.
+3. **The fax arrives.** A simulated practice fax inbox shows the referral getting past the front desk (marketing faxes are discarded). The fax has a scannable QR code.
 4. **The specialist responds.** After scanning the QR code, the specialist confirms their identity against their NPI record and accepts, asks for a call, or declines. Joining Impiricus is a separate, optional step with contact preferences (never SMS).
 5. **Patient consent.** When the specialist accepts, an authorization form is generated. The referring physician reviews and approves it, and it's emailed to the patient. The patient confirms their date of birth, reads the form, and e-signs.
 6. **Gated release.** Only after the patient signs is the approved information released to the specialist. The referring physician gets a notification, and every step is recorded in an audit trail.
